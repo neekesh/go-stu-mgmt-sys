@@ -20,7 +20,7 @@ func main() {
 
 	server.POST("/create", api.PostStudent)
 
-	server.DELETE("/delete", api.DeleteStudent)
+	server.DELETE("/delete/:id", api.DeleteStudent)
 
 	server.PUT("/update/:id", api.UpdateStudent)
 	server.Run(":2000")

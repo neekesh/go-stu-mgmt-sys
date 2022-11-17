@@ -64,30 +64,36 @@ func PostStudent(ctx *gin.Context) {
 }
 
 func DeleteStudent(ctx *gin.Context) {
-	ctx.JSON(204, gin.H{
-		"msg": "Delete student",
+	var students models.Student
+
+	if err := infrastructure.DB.Where("id=?", ctx.Param("id")).First(&students).Error; err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Student Doesnot exists",
+		})
+	}
+
+	infrastructure.DB.Delete(students)
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "student deleted",
 	})
 }
 
 func UpdateStudent(ctx *gin.Context) {
 	var student models.Student
-	log.Println(student)
-	log.Println("Am i here", ctx.Param("id"))
+
 	if err := infrastructure.DB.Where("id = ?", ctx.Param("id")).First(&student).Error; err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Record NOt Founds"})
 		return
 	}
 
 	var input UpdateStudentInput
-	log.Println("checked here", ctx.Param("id"))
 
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	log.Println("before update", ctx.Param("id"))
+
 	infrastructure.DB.Model(student).Updates(input)
-	log.Println("after uupdate", ctx.Param("id"))
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"msg":  "Update student data",
