@@ -21,9 +21,13 @@ type StudentCreate struct {
 }
 
 func GetAllStudent(ctx *gin.Context) {
+	var students []models.Student
+
+	infrastructure.DB.Find(&students)
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"msg": "get all teh student",
+		"msg":  "get all teh student",
+		"data": students,
 	})
 }
 
