@@ -2,7 +2,7 @@ package main
 
 import (
 	"learn-go/api"
-	database "learn-go/infrastructure"
+	infrastructure "learn-go/infrastructure"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -10,14 +10,15 @@ import (
 
 func main() {
 	server := gin.Default()
-
+	// infrastructure.InitializeLogger()
+	// infrastructure.Logger.Info("started Server")
 	godotenv.Load()
 
-	database.ConnectDB()
+	infrastructure.ConnectDB()
 
-	server.GET("/", api.GetStudent)
+	server.GET("/", api.GetAllStudent)
 
-	server.POST("/create", api.CreateStudent)
+	server.POST("/create", api.PostStudent)
 
 	server.DELETE("/delete", api.DeleteStudent)
 
