@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"fmt"
+	"learn-go/models"
 	"os"
 
 	"gorm.io/driver/postgres"
@@ -28,7 +29,7 @@ func ConnectDB() {
 		panic("Failed to connect to database!")
 	}
 	// err = db.AutoMigrate(&models.Student)
-
+	db.AutoMigrate(models.Student{})
 	DB = db
-
+	// return db
 }
