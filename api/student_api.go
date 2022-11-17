@@ -20,6 +20,14 @@ type StudentCreate struct {
 	Grade    string `json:"grade"  binding:"required"`
 }
 
+type UpdateStudentInput struct {
+	FullName string `json:"full_name"`
+	Age      uint8  `json:"age,string"`
+	Address  string `json:"address"`
+	Major    string `json:"major"`
+	Grade    string `json:"grade"`
+}
+
 func GetAllStudent(ctx *gin.Context) {
 	var students []models.Student
 
@@ -62,7 +70,27 @@ func DeleteStudent(ctx *gin.Context) {
 }
 
 func UpdateStudent(ctx *gin.Context) {
-	ctx.JSON(200, gin.H{
-		"msg": "Update student data",
+	var student models.Student
+	log.Println(student)
+	log.Println("Am i here", ctx.Param("id"))
+	if err := infrastructure.DB.Where("id = ?", ctx.Param("id")).First(&student).Error; err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Record NOt Founds"})
+		return
+	}
+
+	var input UpdateStudentInput
+	log.Println("checked here", ctx.Param("id"))
+
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	log.Println("before update", ctx.Param("id"))
+	infrastructure.DB.Model(student).Updates(input)
+	log.Println("after uupdate", ctx.Param("id"))
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"msg":  "Update student data",
+		"data": student,
 	})
 }

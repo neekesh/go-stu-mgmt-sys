@@ -22,6 +22,6 @@ func main() {
 
 	server.DELETE("/delete", api.DeleteStudent)
 
-	server.PUT("/update", api.UpdateStudent)
+	server.PUT("/update/:id", api.UpdateStudent)
 	server.Run(":2000")
 }
