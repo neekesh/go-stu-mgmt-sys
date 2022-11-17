@@ -1,9 +1,10 @@
 package models
 
 type Student struct {
-	FullName string
-	Age      int8
-	Address  string
-	Major    string
-	Grade    string
+	Id       uint64 `json:"id,string" gorm:"primaryKey"`
+	FullName string `json:"full_name"`
+	Age      uint8  `json:"age,string"`
+	Address  string `json:"address"`
+	Major    string `json:"major"`
+	Grade    string `json:"grade"`
 }
