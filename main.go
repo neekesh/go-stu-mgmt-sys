@@ -3,6 +3,7 @@ package main
 import (
 	"learn-go/api"
 	infrastructure "learn-go/infrastructure"
+	"learn-go/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -16,6 +17,10 @@ func main() {
 
 	infrastructure.ConnectDB()
 
+	infrastructure.SetupFirebase()
+
+	server.Use(middleware.FirebaseAuth)
+
 	server.GET("/", api.GetAllStudent)
 
 	server.POST("/create", api.PostStudent)
@@ -23,5 +28,6 @@ func main() {
 	server.DELETE("/delete/:id", api.DeleteStudent)
 
 	server.PUT("/update/:id", api.UpdateStudent)
+
 	server.Run(":2000")
 }
