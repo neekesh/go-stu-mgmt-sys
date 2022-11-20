@@ -10,9 +10,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-var AuthClient *auth.Client
-
-func SetupFirebase() {
+func SetupFirebase() *auth.Client {
 	serviceAccountKeyFilePath, err := filepath.Abs("./FirebaseServiceKey.json")
 	fmt.Println(serviceAccountKeyFilePath)
 	if err != nil {
@@ -33,6 +31,5 @@ func SetupFirebase() {
 		panic("Firebase Authentication  error(Client Creation)")
 	}
 
-	AuthClient = auth
-
+	return auth
 }
