@@ -11,7 +11,7 @@ import (
 
 var DB *gorm.DB
 
-func ConnectDB() {
+func ConnectDB() *gorm.DB {
 
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s",
@@ -31,5 +31,5 @@ func ConnectDB() {
 	// err = db.AutoMigrate(&models.Student)
 	db.AutoMigrate(models.Student{})
 	DB = db
-	// return db
+	return db
 }
