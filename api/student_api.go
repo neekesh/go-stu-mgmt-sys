@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"learn-go/infrastructure"
 	"learn-go/models"
 	"net/http"
@@ -52,7 +51,6 @@ func PostStudent(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Println(newStudent)
 	student := models.Student{
 		FullName: newStudent.FullName,
 		Age:      newStudent.Age,
