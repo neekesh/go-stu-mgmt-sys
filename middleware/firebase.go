@@ -2,15 +2,15 @@ package middleware
 
 import (
 	"context"
-	"learn-go/infrastructure"
 	"net/http"
 	"strings"
 
+	"firebase.google.com/go/auth"
 	"github.com/gin-gonic/gin"
 )
 
 func FirebaseAuth(ctx *gin.Context) {
-	firebaseAuth := infrastructure.AuthClient
+	firebaseAuth := ctx.MustGet("firebaseAuth").(*auth.Client)
 
 	authorizationToken := ctx.GetHeader("Authorization")
 	idToken := strings.TrimSpace(strings.Replace(authorizationToken, "Bearer", "", 1))
