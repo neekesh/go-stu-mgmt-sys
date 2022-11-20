@@ -9,6 +9,8 @@ services:
       - "2000:2000"
     volumes:
       - .:/SMS
+    entrypoint:
+      - ./docker/run.sh
     env_file:
       - .env.docker
     container_name: "SMS_backend"
