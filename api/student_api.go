@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"learn-go/infrastructure"
 	"learn-go/models"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // var DB = infrastructure.DB
@@ -30,8 +32,9 @@ type UpdateStudentInput struct {
 
 func GetAllStudent(ctx *gin.Context) {
 	var students []models.Student
+	db := ctx.MustGet("db").(*gorm.DB)
 
-	infrastructure.DB.Find(&students)
+	db.Find(&students)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"msg":  "get all teh student",
@@ -41,6 +44,7 @@ func GetAllStudent(ctx *gin.Context) {
 
 func PostStudent(ctx *gin.Context) {
 	var newStudent StudentCreate
+	db := ctx.MustGet("db").(*gorm.DB)
 
 	if err := ctx.BindJSON(&newStudent); err != nil {
 		log.Print("Error", err)
@@ -48,6 +52,7 @@ func PostStudent(ctx *gin.Context) {
 		return
 	}
 
+	fmt.Println(newStudent)
 	student := models.Student{
 		FullName: newStudent.FullName,
 		Age:      newStudent.Age,
@@ -55,8 +60,7 @@ func PostStudent(ctx *gin.Context) {
 		Major:    newStudent.Major,
 		Grade:    newStudent.Grade,
 	}
-
-	infrastructure.DB.Create(&student)
+	db.Create(&student)
 	ctx.JSON(http.StatusCreated, gin.H{
 		"msg":  "new student craete",
 		"data": student,
@@ -65,8 +69,9 @@ func PostStudent(ctx *gin.Context) {
 
 func DeleteStudent(ctx *gin.Context) {
 	var students models.Student
+	db := ctx.MustGet("db").(*gorm.DB)
 
-	if err := infrastructure.DB.Where("id=?", ctx.Param("id")).First(&students).Error; err != nil {
+	if err := db.Where("id=?", ctx.Param("id")).First(&students).Error; err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": "Student Doesnot exists",
 		})
@@ -80,8 +85,9 @@ func DeleteStudent(ctx *gin.Context) {
 
 func UpdateStudent(ctx *gin.Context) {
 	var student models.Student
+	db := ctx.MustGet("db").(*gorm.DB)
 
-	if err := infrastructure.DB.Where("id = ?", ctx.Param("id")).First(&student).Error; err != nil {
+	if err := db.Where("id = ?", ctx.Param("id")).First(&student).Error; err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Record NOt Founds"})
 		return
 	}
