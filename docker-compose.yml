@@ -1,0 +1,32 @@
+version: "3.3"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    ports: 
+      - "2000:2000"
+    volumes:
+      - .:/SMS
+    env_file:
+      - .env.docker
+    container_name: "SMS_backend"
+    networks:
+      - SMS
+    depends_on:
+      - database
+  
+  database:
+    image: docker.io/postgres:15
+    container_name: SMS_database
+    environment:
+      - POSTGRES_USER=studententry
+      - POSTGRES_PASSWORD=studententry
+      - POSTGRES_DB=studententry
+    networks:
+      - SMS
+
+networks:
+  SMS:
+    external: true
