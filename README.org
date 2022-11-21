@@ -16,6 +16,7 @@ systems:
     Requirements:
         #+begin_src
             - Docker installed in the system
+            - Python version 3.18
         #+end_src
 
     1. Clone the project
@@ -36,4 +37,17 @@ systems:
     5. Restarting the project after stoping:
         #+begin_src
             make run
+        #+end_src
+
+** For Testing:
+    1. Run the  generate_token.py file in the auth_token directory to add new users and log in,
+    from which you can get token which is useful for authentication.
+        #+begin_src
+            python3.8 -m venv venv # create python virtual environment
+            pip install -r requirements.txt # install all the requirements
+            python3.8 auth_token/generate_token.py # run the file
+        #+end_src
+    2. Copy the token after login and add it it in the header while sending requests
+        #+begin_src
+            Authorization: Bearer Token_after_login
         #+end_src
