@@ -1,0 +1,39 @@
+* Student Management System
+** Brief Introduction
+Student Management System(SMS) is project that i created in order to learn golang. This 
+project handles all the CRUD  HTTP requests( PUT, GET, DELETE, POST). In this project, there are following 
+systems:
+    + Sign in and Sign Up (written in python )
+    + Token Based Authentication (Firebase Authentication)
+    + Handling HTTP requests
+*** Technology used:    
+    + gin (web framework for go lang)
+    + firebase (User Authentication)
+    + POSTGRES (database for storing the student records)
+    + Docker (containerization)
+
+** Run Project 
+    Requirements:
+        #+begin_src
+            - Docker installed in the system
+        #+end_src
+
+    1. Clone the project
+    2. Running the project:
+        - for first time
+        #+begin_src
+            make build
+        #+end_src
+    3. Stopping the project:
+        #+begin_src
+            make stop
+        #+end_src
+    4. Removing the project from the system:
+        #+begin_src
+            make stop
+            make remove
+        #+end_src
+    5. Restarting the project after stoping:
+        #+begin_src
+            make run
+        #+end_src
