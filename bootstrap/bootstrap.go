@@ -2,7 +2,9 @@ package bootstrap
 
 import (
 	"learn-go/api/controllers"
+	"learn-go/api/middleware"
 	"learn-go/api/routes"
+	"learn-go/api/services"
 	infrastructure "learn-go/infrastructure"
 	"os"
 
@@ -13,13 +15,17 @@ var Module = fx.Options(
 	controllers.Module,
 	infrastructure.Module,
 	routes.Module,
+	middleware.Module,
+	services.Module,
 	fx.Invoke(bootstrap),
 )
 
 func bootstrap(
 	handler infrastructure.Router,
 	routes routes.Routes,
+	middlewares middleware.Middlewares,
 ) {
+	middlewares.Handle()
 	routes.Setup()
 	handler.Gin.Run(":" + os.Getenv("ServerPort"))
 
