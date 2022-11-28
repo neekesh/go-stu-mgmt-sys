@@ -23,9 +23,8 @@ var Module = fx.Options(
 func bootstrap(
 	handler infrastructure.Router,
 	routes routes.Routes,
-	middlewares middleware.Middlewares,
+
 ) {
-	middlewares.Handle()
 	routes.Setup()
 	handler.Gin.Run(":" + os.Getenv("ServerPort"))
 
