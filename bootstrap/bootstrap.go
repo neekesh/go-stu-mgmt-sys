@@ -1,42 +1,26 @@
 package bootstrap
 
 import (
-	"learn-go/api"
+	"learn-go/api/controllers"
+	"learn-go/api/routes"
 	infrastructure "learn-go/infrastructure"
-	"learn-go/middleware"
 	"os"
-
-	"firebase.google.com/go/auth"
-	"github.com/gin-gonic/gin"
 
 	"go.uber.org/fx"
 )
 
 var Module = fx.Options(
+	controllers.Module,
 	infrastructure.Module,
+	routes.Module,
 	fx.Invoke(bootstrap),
 )
 
 func bootstrap(
-	fbauth *auth.Client,
-	db infrastructure.Database,
+	handler infrastructure.Router,
+	routes routes.Routes,
 ) {
-	router := gin.Default()
+	routes.Setup()
+	handler.Gin.Run(":" + os.Getenv("ServerPort"))
 
-	router.Use(func(c *gin.Context) {
-		c.Set("db", db.DB)
-		c.Set("firebaseAuth", fbauth)
-	})
-
-	router.Use(middleware.FirebaseAuth)
-
-	router.GET("/", api.GetAllStudent)
-
-	router.POST("/create", api.PostStudent)
-
-	router.DELETE("/delete/:id", api.DeleteStudent)
-
-	router.PUT("/update/:id", api.UpdateStudent)
-
-	router.Run(":" + os.Getenv("ServerPort"))
 }
