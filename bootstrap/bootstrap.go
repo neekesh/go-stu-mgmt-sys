@@ -6,6 +6,7 @@ import (
 	"learn-go/middleware"
 	"os"
 
+	"firebase.google.com/go/auth"
 	"github.com/gin-gonic/gin"
 
 	"go.uber.org/fx"
@@ -16,15 +17,15 @@ var Module = fx.Options(
 	fx.Invoke(bootstrap),
 )
 
-func bootstrap() {
+func bootstrap(
+	fbauth *auth.Client,
+	db infrastructure.Database,
+) {
 	router := gin.Default()
-	db := infrastructure.ConnectDB()
-
-	firebaseAuth := infrastructure.SetupFirebase()
 
 	router.Use(func(c *gin.Context) {
-		c.Set("db", db)
-		c.Set("firebaseAuth", firebaseAuth)
+		c.Set("db", db.DB)
+		c.Set("firebaseAuth", fbauth)
 	})
 
 	router.Use(middleware.FirebaseAuth)
