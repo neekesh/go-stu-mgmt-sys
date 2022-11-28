@@ -3,6 +3,7 @@ package infrastructure
 import "go.uber.org/fx"
 
 var Module = fx.Options(
-	fx.Provide(ConnectDB),
-	fx.Provide(SetupFirebase),
+	fx.Provide(NewConnectDB),
+	fx.Provide(NewFirebaseApp),
+	fx.Provide(NewFirebaseAuth),
 )
