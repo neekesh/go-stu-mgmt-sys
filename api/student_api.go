@@ -1,7 +1,6 @@
 package api
 
 import (
-	"learn-go/infrastructure"
 	"learn-go/models"
 	"net/http"
 
@@ -11,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// var DB = infrastructure.DB
+// var DB = db
 
 type StudentCreate struct {
 	FullName string `json:"full_name" binding:"required"`
@@ -75,7 +74,7 @@ func DeleteStudent(ctx *gin.Context) {
 		})
 	}
 
-	infrastructure.DB.Delete(students)
+	db.Delete(students)
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "student deleted",
 	})
@@ -97,7 +96,7 @@ func UpdateStudent(ctx *gin.Context) {
 		return
 	}
 
-	infrastructure.DB.Model(student).Updates(input)
+	db.Model(student).Updates(input)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"msg":  "Update student data",
