@@ -29,13 +29,11 @@ func NewFirebaseApp() *firebase.App {
 }
 
 func NewFirebaseAuth(app *firebase.App) *auth.Client {
-	fmt.Println("this is awesome authentication")
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	//Firebase Auth
 	auth, err := app.Auth(ctx)
 	if err != nil {
-		fmt.Println("firebase auththeicaiton error")
 		panic("Firebase Authentication  error(Client Creation)")
 	}
 	return auth
