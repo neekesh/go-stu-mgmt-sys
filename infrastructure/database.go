@@ -9,9 +9,11 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+type Database struct {
+	*gorm.DB
+}
 
-func ConnectDB() *gorm.DB {
+func NewConnectDB() Database {
 
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s",
@@ -21,7 +23,6 @@ func ConnectDB() *gorm.DB {
 		os.Getenv("DBName"),
 		os.Getenv("DBPort"),
 	)
-	print(dsn)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
@@ -30,6 +31,8 @@ func ConnectDB() *gorm.DB {
 	}
 	// err = db.AutoMigrate(&models.Student)
 	db.AutoMigrate(models.Student{})
-	DB = db
-	return db
+
+	return Database{
+		DB: db,
+	}
 }
