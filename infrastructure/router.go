@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"learn-go/api/middleware"
 	"net/http"
 
 	"firebase.google.com/go/auth"
@@ -11,7 +12,7 @@ type Router struct {
 	Gin *gin.Engine
 }
 
-func NewRouter(fbauth *auth.Client, db Database) Router {
+func NewRouter(fbauth *auth.Client, db Database, m middleware.FirebaseAuth) Router {
 	httpRouter := gin.Default()
 	httpRouter.GET("/health-check", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": "Api is runnings."})
@@ -20,7 +21,7 @@ func NewRouter(fbauth *auth.Client, db Database) Router {
 		c.Set("db", db.DB)
 		c.Set("firebaseAuth", fbauth)
 	})
-
+	httpRouter.Use(m.Handle())
 	return Router{
 		Gin: httpRouter,
 	}
