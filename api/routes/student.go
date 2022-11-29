@@ -22,7 +22,7 @@ func (c StudentRoutes) Setup() {
 	{
 		student.GET("/", c.studentController.GetAllStudent)
 		student.POST("/create", c.studentController.PostStudent)
-		student.PUT("/update", c.studentController.UpdateStudent)
-		student.DELETE("/delete", c.studentController.DeleteStudent)
+		student.PUT("/update/:id", c.studentController.UpdateStudent)
+		student.DELETE("/delete/:id", c.studentController.DeleteStudent)
 	}
 }
