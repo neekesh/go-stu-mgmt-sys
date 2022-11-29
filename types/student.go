@@ -1,4 +1,4 @@
-package constants
+package types
 
 type StudentCreate struct {
 	FullName string `json:"full_name" binding:"required"`
