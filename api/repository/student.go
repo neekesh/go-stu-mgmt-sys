@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"learn-go/constants"
 	"learn-go/infrastructure"
 	"learn-go/models"
 )
@@ -29,8 +28,7 @@ func (c StudentRepository) CheckStudent(id string, students *models.Student) err
 }
 
 func (c StudentRepository) Update(
-	input constants.UpdateStudentInput,
-	students *models.Student,
+	student *models.Student,
 ) error {
-	return c.database.DB.Model(students).Updates(input).Error
+	return c.database.DB.Model(models.Student{}).Where("id=?", student.Id).Updates(student).Error
 }
