@@ -2,10 +2,11 @@ package controllers
 
 import (
 	"learn-go/api/repository"
-	"learn-go/constants"
 	"learn-go/models"
+	"learn-go/types"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -34,7 +35,7 @@ func (cc StudentControllers) GetAllStudent(ctx *gin.Context) {
 }
 
 func (cc StudentControllers) PostStudent(ctx *gin.Context) {
-	var newStudent constants.StudentCreate
+	var newStudent types.StudentCreate
 	// db := ctx.MustGet("db").(*gorm.DB)
 
 	if err := ctx.BindJSON(&newStudent); err != nil {
@@ -74,22 +75,28 @@ func (cc StudentControllers) DeleteStudent(ctx *gin.Context) {
 }
 
 func (cc StudentControllers) UpdateStudent(ctx *gin.Context) {
-	var student models.Student
+	// var student models.Student
 	// db := ctx.MustGet("db").(*gorm.DB)
-
-	if err := cc.student.CheckStudent(ctx.Param("id"), &student); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Record NOt Founds"})
-		return
-	}
-
-	var input constants.UpdateStudentInput
+	var input types.UpdateStudentInput
 
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	id, _ := strconv.Atoi(ctx.Param("id"))
+	student := models.Student{
+		Id:       uint64(id),
+		FullName: input.FullName,
+		Age:      input.Age,
+		Address:  input.Address,
+		Major:    input.Major,
+		Grade:    input.Grade,
+	}
 
-	cc.student.Update(input, &student)
+	if err := cc.student.Update(&student); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"msg":  "Update student data",
