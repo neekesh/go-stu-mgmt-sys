@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"learn-go/api/repository"
+	"learn-go/constants"
 	"learn-go/models"
 	"log"
 	"net/http"
@@ -10,26 +12,13 @@ import (
 )
 
 type StudentControllers struct {
+	student repository.StudentRepository
 }
 
-func NewStudentControllers() StudentControllers {
-	return StudentControllers{}
-}
-
-type StudentCreate struct {
-	FullName string `json:"full_name" binding:"required"`
-	Age      uint8  `json:"age,string" binding:"required"`
-	Address  string `json:"address" binding:"required"`
-	Major    string `json:"major" binding:"required"`
-	Grade    string `json:"grade"  binding:"required"`
-}
-
-type UpdateStudentInput struct {
-	FullName string `json:"full_name"`
-	Age      uint8  `json:"age,string"`
-	Address  string `json:"address"`
-	Major    string `json:"major"`
-	Grade    string `json:"grade"`
+func NewStudentControllers(student repository.StudentRepository) StudentControllers {
+	return StudentControllers{
+		student: student,
+	}
 }
 
 func (cc StudentControllers) GetAllStudent(ctx *gin.Context) {
@@ -45,8 +34,8 @@ func (cc StudentControllers) GetAllStudent(ctx *gin.Context) {
 }
 
 func (cc StudentControllers) PostStudent(ctx *gin.Context) {
-	var newStudent StudentCreate
-	db := ctx.MustGet("db").(*gorm.DB)
+	var newStudent constants.StudentCreate
+	// db := ctx.MustGet("db").(*gorm.DB)
 
 	if err := ctx.BindJSON(&newStudent); err != nil {
 		log.Print("Error", err)
@@ -61,7 +50,7 @@ func (cc StudentControllers) PostStudent(ctx *gin.Context) {
 		Major:    newStudent.Major,
 		Grade:    newStudent.Grade,
 	}
-	db.Create(&student)
+	cc.student.Create(student)
 	ctx.JSON(http.StatusCreated, gin.H{
 		"msg":  "new student craete",
 		"data": student,
@@ -70,15 +59,15 @@ func (cc StudentControllers) PostStudent(ctx *gin.Context) {
 
 func (cc StudentControllers) DeleteStudent(ctx *gin.Context) {
 	var students models.Student
-	db := ctx.MustGet("db").(*gorm.DB)
+	// db := ctx.MustGet("db").(*gorm.DB)
 
-	if err := db.Where("id=?", ctx.Param("id")).First(&students).Error; err != nil {
+	if err := cc.student.CheckStudent(ctx.Param("id"), &students); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": "Student Doesnot exists",
 		})
 	}
 
-	db.Delete(students)
+	cc.student.Delete(students)
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "student deleted",
 	})
@@ -86,21 +75,21 @@ func (cc StudentControllers) DeleteStudent(ctx *gin.Context) {
 
 func (cc StudentControllers) UpdateStudent(ctx *gin.Context) {
 	var student models.Student
-	db := ctx.MustGet("db").(*gorm.DB)
+	// db := ctx.MustGet("db").(*gorm.DB)
 
-	if err := db.Where("id = ?", ctx.Param("id")).First(&student).Error; err != nil {
+	if err := cc.student.CheckStudent(ctx.Param("id"), &student); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Record NOt Founds"})
 		return
 	}
 
-	var input UpdateStudentInput
+	var input constants.UpdateStudentInput
 
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	db.Model(student).Updates(input)
+	cc.student.Update(input, &student)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"msg":  "Update student data",
