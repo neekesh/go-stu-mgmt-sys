@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"learn-go/api/controllers"
 	"learn-go/api/middleware"
+	"learn-go/api/repository"
 	"learn-go/api/routes"
 	"learn-go/api/services"
 	infrastructure "learn-go/infrastructure"
@@ -17,6 +18,7 @@ var Module = fx.Options(
 	routes.Module,
 	middleware.Module,
 	services.Module,
+	repository.Module,
 	fx.Invoke(bootstrap),
 )
 
