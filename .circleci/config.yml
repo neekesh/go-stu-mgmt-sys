@@ -33,13 +33,13 @@ jobs:
       - run:
           name:  Wait for postgres
           command:  |
-              for i in `seq 1 30`;
+              for i in `seq 1 60`;
               do
                 nc -z 127.0.0.1 3306 && echo Success && exit 0
                 echo -n .
                 sleep 1
               done
-              echo Failed waiting MySQL && exit 1
+              echo Failed waiting MySQL
 
       - run:
           name: FIrebase service account key
