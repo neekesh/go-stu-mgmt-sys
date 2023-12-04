@@ -41,15 +41,15 @@ jobs:
               done
               echo Failed waiting MySQL && exit 1
 
-      -run:
-        name: FIrebase service account key
-        command: | 
-          echo $FIREBASE_SERVICE_KEY > FirebaseServiceKey.json
+      - run:
+          name: FIrebase service account key
+          command: | 
+            echo $FIREBASE_SERVICE_KEY > FirebaseServiceKey.json
       
       - run:
-        name: build go file
-        command: | 
-          go build main.go
+          name: build go file
+          command: | 
+            go build main.go
       
       - run:
           name: Start Service
