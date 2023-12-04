@@ -1,0 +1,62 @@
+version: 2.1
+
+machine:
+  environment:
+    SHORT_GIT_HASH: $(echo $CIRCLE_SHA1 | cut -c -7)
+jobs:
+  build-push-deploy:
+    docker:
+      - image: google/cloud-sdk:latest
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.14
+          docker_layer_caching: true
+      - run:
+          name: Authenticating and configuring the Google Cloud Platform
+          command: |
+            echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+            gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+      - run:
+          name: Build Docker image
+          command: echo $SHORT_GIT_HASH | docker build --platform=linux/amd64 -t asia.gcr.io/${GOOGLE_PROJECT_ID}/my-first-container:${CIRCLE_SHA1:0:7} .
+      - run:
+          name: Authenticate Docker to gcloud
+          command: echo $GCLOUD_SERVICE_KEY | docker login -u _json_key --password-stdin https://asia.gcr.io
+      - run:
+          name: Push docker image to GCR
+          command: docker push asia.gcr.io/${GOOGLE_PROJECT_ID}/my-first-container:${CIRCLE_SHA1:0:7}
+      - run:
+          name: Deploy docker image to app engine
+          command: |
+            gcloud app deploy app.yaml --image-url=asia.gcr.io/${GOOGLE_PROJECT_ID}/my-first-container:${CIRCLE_SHA1:0:7} --quiet --version=${CIRCLE_SHA1:0:7}
+            
+  deploy:
+    docker:
+      - image: google/cloud-sdk:latest
+    steps:
+      - checkout
+      - run:
+          name: Authenticating and configuring the Google Cloud Platform
+          command: |
+            echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+            gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+      - run:
+          name: Deploy docker image to app engine
+          command: |
+            gcloud app deploy deploy.yaml 
+workflows:
+  build-and-deploy:
+    jobs:
+      - build-push-deploy:
+          filters:
+            branches:
+              only: 
+                - main
+      - deploy:
+          filters:
+            branches:
+              only: 
+                -deploy
