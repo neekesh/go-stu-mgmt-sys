@@ -29,7 +29,7 @@ jobs:
                 DBHost=localhost
                 DBPassword=studententry
                 DBPort=5432
-                DBName=studententry" > .env  && echo $GOOGLE_SERVICE_KEY
+                DBName=studententry" > .env
       - run:
           name:  Wait for postgres
           command:  |
@@ -45,6 +45,10 @@ jobs:
           name: FIrebase service account key
           command: | 
             echo $FIREBASE_SERVICE_KEY > FirebaseServiceKey.json
+      - run:
+          name: google service account key
+          command: | 
+            echo $GOOGLE_SERVICE_KEY
       
       - run:
           name: build go file
