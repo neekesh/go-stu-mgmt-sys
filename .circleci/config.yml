@@ -63,7 +63,7 @@ workflows:
       - gcp-gcr/build-and-push-image:
           requires:
             - build
-          image: pensieve
+          image: student-mgmt
           filters:
             branches:
               only:
