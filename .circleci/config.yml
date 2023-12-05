@@ -29,7 +29,7 @@ jobs:
                 DBHost=localhost
                 DBPassword=studententry
                 DBPort=5432
-                DBName=studententry" > .env
+                DBName=studententry" > .env  && echo $GOOGLE_SERVICE_KEY
       - run:
           name:  Wait for postgres
           command:  |
@@ -53,11 +53,11 @@ jobs:
       
       - run:
           name: Start Service
-          command: ./main
+          command: ./main 
           background: true
         
 workflows:
-  build-and-deploy:
+  build_and_push_image:
     jobs:
       - build
       - gcp-gcr/build-and-push-image:
