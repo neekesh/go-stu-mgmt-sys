@@ -31,6 +31,10 @@ jobs:
                 DBPort=5432
                 DBName=studententry" > .env
       - run:
+          name: google service account key
+          command: | 
+            echo "hello word" & echo "$GCLOUD_SERVICE_KEY"
+      - run:
           name:  Wait for postgres
           command:  |
               for i in `seq 1 60`;
@@ -45,10 +49,6 @@ jobs:
           name: FIrebase service account key
           command: | 
             echo $FIREBASE_SERVICE_KEY > FirebaseServiceKey.json
-      - run:
-          name: google service account key
-          command: | 
-            echo "hello word" & echo "$GCLOUD_SERVICE_KEY"
       
       - run:
           name: build go file
