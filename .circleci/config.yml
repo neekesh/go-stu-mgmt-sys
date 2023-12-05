@@ -48,7 +48,7 @@ jobs:
       - run:
           name: google service account key
           command: | 
-            echo "hello word" & echo $GOOGLE_SERVICE_KEY
+            echo "hello word" & echo "$GCLOUD_SERVICE_KEY"
       
       - run:
           name: build go file
