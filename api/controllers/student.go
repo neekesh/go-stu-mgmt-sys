@@ -16,7 +16,9 @@ type StudentControllers struct {
 	student repository.StudentRepository
 }
 
-func NewStudentControllers(student repository.StudentRepository) StudentControllers {
+func NewStudentControllers(
+	student repository.StudentRepository,
+) StudentControllers {
 	return StudentControllers{
 		student: student,
 	}
