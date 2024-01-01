@@ -62,8 +62,12 @@ jobs:
   push_image:
     docker:
       - image:  google/cloud-sdk
+     
     steps:
       - checkout
+
+      - setup_remote_docker:
+          docker_layer_caching: true
     
       - run:
           name: Configure Docker for GCR
