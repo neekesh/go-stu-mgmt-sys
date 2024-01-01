@@ -68,7 +68,7 @@ jobs:
       - run:
           name: Configure Docker for GCR
           command: |
-            # echo ${GCLOUD_SERVICE_KEY} | base64 --decode --ignore-garbage > ${HOME}/FirebaseServiceKey.json
+            echo ${GCLOUD_SERVICE_KEY} | base64 --decode --ignore-garbage > ${HOME}/FirebaseServiceKey.json
             gcloud auth activate-service-account --key-file=${HOME}/FirebaseServiceKey.json
             gcloud auth configure-docker gcr.io
 
