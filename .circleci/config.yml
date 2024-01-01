@@ -9,11 +9,11 @@ jobs:
     docker:
       - image:  cimg/go:1.19
 
-      - image: cimg/postgres:15.0
-        environment: 
-          - POSTGRES_USER=studententry
-          - POSTGRES_PASSWORD=studententry
-          - POSTGRES_DB=studententry
+      # - image: cimg/postgres:15.0
+      #   environment: 
+      #     - POSTGRES_USER=studententry
+      #     - POSTGRES_PASSWORD=studententry
+      #     - POSTGRES_DB=studententry
 
     
 
@@ -32,16 +32,16 @@ jobs:
           name: google service account key
           command: | 
             echo "hello word" & echo "$GCLOUD_SERVICE_KEY"
-      - run:
-          name:  Wait for postgres
-          command:  |
-              for i in `seq 1 60`;
-              do
-                nc -z 127.0.0.1 3306 && echo Success && exit 0
-                echo -n .
-                sleep 1
-              done
-              echo Failed waiting MySQL
+      # - run:
+      #     name:  Wait for postgres
+      #     command:  |
+      #         for i in `seq 1 60`;
+      #         do
+      #           nc -z 127.0.0.1 3306 && echo Success && exit 0
+      #           echo -n .
+      #           sleep 1
+      #         done
+      #         echo Failed waiting MySQL
 
       - run:
           name: FIrebase service account key
@@ -54,10 +54,10 @@ jobs:
           command: | 
             go build main.go
       
-      - run:
-          name: Start Service
-          command: ./main 
-          background: true
+      # - run:
+      #     name: Start Service
+      #     command: ./main 
+      #     background: true
 
   push_image:
     docker:
