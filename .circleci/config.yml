@@ -1,7 +1,5 @@
 version: 2.1
 
-orbs:
-  gcp-gcr: circleci/gcp-gcr@0.15.3
 machine:
   environment:
     SHORT_GIT_HASH: $(echo $CIRCLE_SHA1 | cut -c -7)
@@ -48,7 +46,8 @@ jobs:
       - run:
           name: FIrebase service account key
           command: | 
-            echo $FIREBASE_SERVICE_KEY > FirebaseServiceKey.json
+            echo ${GCLOUD_SERVICE_KEY} | base64 --decode --ignore-garbage > ${HOME}/FirebaseServiceKey.json
+
       
       - run:
           name: build go file
@@ -59,16 +58,32 @@ jobs:
           name: Start Service
           command: ./main 
           background: true
-        
+
+  push_image:
+     - run:
+          name: Configure Docker for GCR
+          command: |
+            # echo ${GCLOUD_SERVICE_KEY} | base64 --decode --ignore-garbage > ${HOME}/FirebaseServiceKey.json
+            gcloud auth activate-service-account --key-file=${HOME}/FirebaseServiceKey.json
+            gcloud auth configure-docker gcr.io
+
+      - run:
+          name: Build and Push Docker Image to GCR
+          command: |
+            # Replace 'your-project-id' and 'your-image-name' with your actual values
+            docker build -t gcr.io/readytoworkjapan/stu-mgmt:latest .
+            docker push gcr.io/readytoworkjapan/stu-mgmt:latest
+
 workflows:
   build_and_push_image:
     jobs:
       - build
-      - gcp-gcr/build-and-push-image:
+      - push_image:
           requires:
             - build
           image: student-mgmt
           filters:
             branches:
               only:
-                main
+                - main
+                - artifact
