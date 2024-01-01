@@ -60,7 +60,12 @@ jobs:
           background: true
 
   push_image:
-     - run:
+    docker:
+      - image:  google/cloud-sdk
+    steps:
+      - checkout
+    
+      - run:
           name: Configure Docker for GCR
           command: |
             # echo ${GCLOUD_SERVICE_KEY} | base64 --decode --ignore-garbage > ${HOME}/FirebaseServiceKey.json
@@ -81,7 +86,6 @@ workflows:
       - push_image:
           requires:
             - build
-          image: student-mgmt
           filters:
             branches:
               only:
